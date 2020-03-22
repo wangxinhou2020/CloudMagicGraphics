@@ -1,3 +1,5 @@
+static const float kEpsilon = 1e-8;
+
 Vec3f normalize(const Vec3f &v)
 {
     float mag2 = v.x * v.x + v.y * v.y + v.z * v.z;
@@ -59,29 +61,32 @@ bool solveQuadratic(const float &a, const float &b, const float &c, float &x0, f
 }
 
 bool rayTriangleIntersect(
-    const Vec3f &v0, const Vec3f &v1, const Vec3f &v2,
     const Vec3f &orig, const Vec3f &dir,
-    float &tnear, float &u, float &v)
+    const Vec3f &v0, const Vec3f &v1, const Vec3f &v2,
+    float &t, float &u, float &v)
 {
-    Vec3f edge1 = v1 - v0;
-    Vec3f edge2 = v2 - v0;
-    Vec3f pvec = crossProduct(dir, edge2);
-    float det = dotProduct(edge1, pvec);
-    if (det == 0 || det < 0) return false;
+    Vec3f v0v1 = v1 - v0;
+    Vec3f v0v2 = v2 - v0;
+    Vec3f pvec = dir.crossProduct(v0v2);
+    float det = v0v1.dotProduct(pvec);
 
-    Vec3f tvec = orig - v0;
-    u = dotProduct(tvec, pvec);
-    if (u < 0 || u > det) return false;
-
-    Vec3f qvec = crossProduct(tvec, edge1);
-    v = dotProduct(dir, qvec);
-    if (v < 0 || u + v > det) return false;
+    //std::cout<<v0v1<<" "<<v0v2<<" "<<pvec<<" "<<det<<" "<<kEpsilon<<std::endl;
+    // ray and triangle are parallel if det is close to 0
+    //if (fabs(det) < kEpsilon) return false;
+    if (det < kEpsilon) return false;
 
     float invDet = 1 / det;
-    
-    tnear = dotProduct(edge2, qvec) * invDet;
-    u *= invDet;
-    v *= invDet;
+
+    Vec3f tvec = orig - v0;
+    u = tvec.dotProduct(pvec) * invDet;
+    if (u < 0 || u > 1) return false;
+
+    Vec3f qvec = tvec.crossProduct(v0v1);
+    v = dir.dotProduct(qvec) * invDet;
+    if (v < 0 || u + v > 1) return false;
+
+    t = v0v2.dotProduct(qvec) * invDet;
+    if (t < 0) return false;
 
     return true;
 }
@@ -161,3 +166,27 @@ void fresnel(const Vec3f &I, const Vec3f &N, const float &ior, float &kr)
     // kt = 1 - kr;
 }
 
+Matrix44f lookAt(const Vec3f& from, const Vec3f& to, const Vec3f& tmp = Vec3f(0, 1, 0))
+{
+    Vec3f forward = normalize(from - to);
+    Vec3f right = crossProduct(normalize(tmp), forward);
+    Vec3f up = crossProduct(forward, right);
+
+    Matrix44f camToWorld;
+
+    camToWorld[0][0] = right.x;
+    camToWorld[0][1] = right.y;
+    camToWorld[0][2] = right.z;
+    camToWorld[1][0] = up.x;
+    camToWorld[1][1] = up.y;
+    camToWorld[1][2] = up.z;
+    camToWorld[2][0] = forward.x;
+    camToWorld[2][1] = forward.y;
+    camToWorld[2][2] = forward.z;
+
+    camToWorld[3][0] = from.x;
+    camToWorld[3][1] = from.y;
+    camToWorld[3][2] = from.z;
+
+    return camToWorld;
+}
