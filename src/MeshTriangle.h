@@ -1,3 +1,5 @@
+#ifndef MESHTRIANGLEH
+#define MESHTRIANGLEH
 #include <cstdlib>
 #include <cstdio>
 #include <iostream>
@@ -175,3 +177,4 @@ public:
     /* there will be mapRatio*mapRatio*4 blocks of different color */
     uint32_t mapRatio = 5;
 };
+#endif

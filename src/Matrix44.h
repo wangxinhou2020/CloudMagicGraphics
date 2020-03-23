@@ -1,3 +1,6 @@
+#ifndef MATRIX44H
+#define MATRIX44H
+
 #include <cstdlib>
 #include <cstdio>
 #include <iostream>
@@ -18,9 +21,55 @@ class Matrix44
 public:
 
     T x[4][4] = {{1,0,0,0},{0,1,0,0},{0,0,1,0},{0,0,0,1}};
+    static const Matrix44 kIdentity;
 
     Matrix44() {}
 
+    // Leo: create a matrix by using lookat function
+    Matrix44(const Vec3f& from, const Vec3f& to, const Vec3f& tmp = Vec3f(1, 0, 0)) 
+    { 
+        Vec3f up = (to - from); 
+        up = up.normalize();
+        Vec3f forward = tmp.crossProduct(up);
+        Vec3f right = up.crossProduct(forward); 
+     
+        x[0][0] = right.x; 
+        x[0][1] = right.y; 
+        x[0][2] = right.z; 
+        x[1][0] = up.x; 
+        x[1][1] = up.y; 
+        x[1][2] = up.z; 
+        x[2][0] = forward.x; 
+        x[2][1] = forward.y; 
+        x[2][2] = forward.z; 
+     
+        x[3][0] = from.x; 
+        x[3][1] = from.y; 
+        x[3][2] = from.z; 
+    } 
+    /*
+    Matrix44(const Vec3f& from, const Vec3f& to, const Vec3f& tmp = Vec3f(0, 1, 0)) 
+    { 
+        Vec3f forward = (from - to); 
+        forward = forward.normalize();
+        Vec3f right = tmp.crossProduct(forward); 
+        Vec3f up = forward.crossProduct(right); 
+     
+        x[0][0] = right.x; 
+        x[0][1] = right.y; 
+        x[0][2] = right.z; 
+        x[1][0] = up.x; 
+        x[1][1] = up.y; 
+        x[1][2] = up.z; 
+        x[2][0] = forward.x; 
+        x[2][1] = forward.y; 
+        x[2][2] = forward.z; 
+     
+        x[3][0] = from.x; 
+        x[3][1] = from.y; 
+        x[3][2] = from.z; 
+    } 
+    */
     Matrix44 (T a, T b, T c, T d, T e, T f, T g, T h,
               T i, T j, T k, T l, T m, T n, T o, T p)
     {
@@ -364,3 +413,5 @@ public:
 };
 
 typedef Matrix44<float> Matrix44f;
+
+#endif

@@ -1,8 +1,16 @@
+#ifndef OBJECTH
+#define OBJECTH
 #include <cstdlib>
 #include <cstdio>
 #include <iostream>
 #include <iomanip>
 #include <cmath>
+
+#include "Values.h"
+#include "Surface.h"
+#include "Option.h"
+#include "Ray.h"
+
 
 class Object
 {
@@ -140,3 +148,4 @@ class Object
     Vec3f  localDiffuseColor = -1.;
 };
 
+#endif

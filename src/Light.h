@@ -1,8 +1,12 @@
+#ifndef LIGHTH
+#define LIGHTH
 #include <cstdlib>
 #include <cstdio>
 #include <iostream>
 #include <iomanip>
 #include <cmath>
+
+#include "Vec3.h"
 
 class Light
 {
@@ -12,3 +16,4 @@ public:
     Vec3f intensity;
 };
 
+#endif

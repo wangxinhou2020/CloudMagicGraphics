@@ -1,3 +1,5 @@
+#ifndef RAYH
+#define RAYH
 #include <cstdlib>
 #include <cstdio>
 #include <iostream>
@@ -47,3 +49,4 @@ public:
     uint32_t weakCount;
 };
 
+#endif

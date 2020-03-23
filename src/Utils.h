@@ -1,5 +1,10 @@
-static const float kEpsilon = 1e-8;
+#ifndef UTILSH
+#define UTILSH
 
+#include "Values.h"
+#include "Vec3.h"
+
+inline
 Vec3f normalize(const Vec3f &v)
 {
     float mag2 = v.x * v.x + v.y * v.y + v.z * v.z;
@@ -10,10 +15,12 @@ Vec3f normalize(const Vec3f &v)
 
     return v;
 }
+
 inline
 float dotProduct(const Vec3f &a, const Vec3f &b)
 { return a.x * b.x + a.y * b.y + a.z * b.z; }
 
+inline
 Vec3f crossProduct(const Vec3f &a, const Vec3f &b)
 {
     return Vec3f(
@@ -44,6 +51,7 @@ inline
 Vec3f mix(const Vec3f &a, const Vec3f& b, const float &mixValue)
 { return a * (1 - mixValue) + b * mixValue; }
 
+inline
 bool solveQuadratic(const float &a, const float &b, const float &c, float &x0, float &x1)
 {
     float discr = b * b - 4 * a * c;
@@ -70,10 +78,8 @@ bool rayTriangleIntersect(
     Vec3f pvec = dir.crossProduct(v0v2);
     float det = v0v1.dotProduct(pvec);
 
-    //std::cout<<v0v1<<" "<<v0v2<<" "<<pvec<<" "<<det<<" "<<kEpsilon<<std::endl;
     // ray and triangle are parallel if det is close to 0
-    //if (fabs(det) < kEpsilon) return false;
-    if (det < kEpsilon) return false;
+    if (fabs(det) < kEpsilon) return false;
 
     float invDet = 1 / det;
 
@@ -86,9 +92,8 @@ bool rayTriangleIntersect(
     if (v < 0 || u + v > 1) return false;
 
     t = v0v2.dotProduct(qvec) * invDet;
-    if (t < 0) return false;
 
-    return true;
+    return t < 0 ? false: true;
 }
 
 // [comment]
@@ -144,6 +149,7 @@ Vec3f refract(const Vec3f &I, const Vec3f &N, const float &ior)
 //
 // \param[out] kr is the amount of light reflected
 // [/comment]
+inline
 void fresnel(const Vec3f &I, const Vec3f &N, const float &ior, float &kr)
 {
     float cosi = clamp(-1, 1, dotProduct(I, N));
@@ -166,6 +172,7 @@ void fresnel(const Vec3f &I, const Vec3f &N, const float &ior, float &kr)
     // kt = 1 - kr;
 }
 
+inline
 Matrix44f lookAt(const Vec3f& from, const Vec3f& to, const Vec3f& tmp = Vec3f(0, 1, 0))
 {
     Vec3f forward = normalize(from - to);
@@ -190,3 +197,4 @@ Matrix44f lookAt(const Vec3f& from, const Vec3f& to, const Vec3f& tmp = Vec3f(0,
 
     return camToWorld;
 }
+#endif

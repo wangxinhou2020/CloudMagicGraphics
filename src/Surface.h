@@ -1,8 +1,16 @@
+#ifndef SURFACEH
+#define SURFACEH
 #include <cstdlib>
 #include <cstdio>
 #include <iostream>
 #include <iomanip>
 #include <cmath>
+
+#include "Values.h"
+#include "Utils.h"
+#include "Vec2.h"
+#include "Vec3.h"
+#include "SurfaceAngle.h"
 
 // shade point on each object
 class Surface {
@@ -22,7 +30,7 @@ public:
         idx = index;
         N = normal;
         if (angleRatio > 0.0) {
-            local2World = Matrix44f(center, center+N);
+            local2World = lookAt(center, center+N);
             world2Local = local2World.inverse();
         }
         MY_UINT64_T size = (MY_UINT64_T)sizeof(SurfaceAngle)*vAngleRes*hAngleRes;
@@ -97,3 +105,4 @@ public:
     struct SurfaceAngle *angles = nullptr;
 };
 
+#endif

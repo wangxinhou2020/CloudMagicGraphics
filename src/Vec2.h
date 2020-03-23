@@ -1,3 +1,6 @@
+#ifndef VEC2H
+#define VEC2H
+
 #include <cstdlib>
 #include <cstdio>
 #include <iostream>
@@ -32,3 +35,4 @@ public:
 
 typedef Vec2<float> Vec2f;
 typedef Vec2<int> Vec2i;
+#endif

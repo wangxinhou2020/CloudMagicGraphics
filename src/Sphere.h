@@ -1,8 +1,14 @@
+#ifndef SPHEREH
+#define SPHEREH
 #include <cstdlib>
 #include <cstdio>
 #include <iostream>
 #include <iomanip>
 #include <cmath>
+
+#include "Values.h"
+#include "Object.h"
+
 
 class Sphere : public Object
 {
@@ -127,3 +133,4 @@ public:
     float radius, radius2;
 };
 
+#endif
